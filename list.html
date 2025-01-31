@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inventory Insight</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <nav>
+        <div>
+            <img src="" alt="logo" class="logo"/>
+        </div>
+        <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="products.html">Products</a></li>
+            <li><a href="list.html">List</a></li>
+            <li><a href="about.html">About Us</a></li>
+        </ul>
+    </nav>
+    <div>
+        <h1 class="page-title">List of Items</h1>
+    </div>
+    <div class="container">
+        <div class="item">
+        </div>
+    </div>
+
+    <button id="clearListButton">Clear List</button>
+
+    <button class="scroll-top-btn"> ⬆ </button>
+
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+    const productList = JSON.parse(localStorage.getItem('productList')) || [];
+    const mainContainer = document.querySelector('.container');
+
+    mainContainer.innerHTML = "";
+
+    if (productList.length === 0) {
+        mainContainer.innerHTML = "<p>No items listed yet.</p>";
+        return;
+    }
+
+    let currentContainer;
+    let itemsInCurrentContainer = 0;
+
+    productList.forEach(item => {
+        if (itemsInCurrentContainer === 0 || itemsInCurrentContainer % 5 === 0) { // Changed to 5
+            currentContainer = document.createElement('div');
+            currentContainer.classList.add('container');
+            const itemDiv = document.createElement('div');
+            itemDiv.classList.add('item');
+            currentContainer.appendChild(itemDiv);
+
+            mainContainer.appendChild(currentContainer);
+            itemsInCurrentContainer = 0;
+        }
+
+        const itemDiv = currentContainer.querySelector('.item');
+        const productEntry = document.createElement('div');
+        productEntry.classList.add('product-entry');
+        productEntry.innerHTML = `<h3>${item.product}</h3><div class="list-item">
+                                    <p><strong>Quantity:</strong> ${item.quantity}</p>
+                                    <p><strong>Date:</strong> ${item.date}</p>
+                                    <p><strong>Price:</strong> ${item.price}</p>
+                                    <p><strong>Purchased By:</strong> ${item.name}</p>
+                                </div>`;
+        itemDiv.appendChild(productEntry);
+        itemsInCurrentContainer++;
+    });
+
+    const clearListButton = document.getElementById('clearListButton');
+    clearListButton.addEventListener('click', () => {
+        localStorage.removeItem('productList');
+        mainContainer.innerHTML = "<p>No items listed yet.</p>";
+    });
+});
+    </script>
+</body>
+</html>
